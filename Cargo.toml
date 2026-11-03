@@ -1,0 +1,43 @@
+[package]
+name = "agent-identity-service"
+version = "1.0.0"
+edition = "2021"
+rust-version = "1.80"
+description = "SPIFFE-style identity, authorization, and audit control plane for AI agents"
+license = "Apache-2.0"
+
+[dependencies]
+axum = { version = "0.7", features = ["macros", "http2"] }
+axum-server = { version = "0.7", features = ["tls-rustls"] }
+tokio = { version = "1", features = ["full"] }
+tower = "0.5"
+tower-http = { version = "0.6", features = ["trace", "timeout", "limit", "compression-gzip"] }
+rustls = "0.23"
+rustls-pemfile = "2"
+rustls-pki-types = "1"
+sqlx = { version = "0.8", features = ["runtime-tokio-rustls","postgres","sqlite","uuid","time","json","migrate"] }
+duckdb = { version = "1.20000.1", features = ["r2d2"] }
+r2d2 = "0.8"
+redis = { version = "0.27", features = ["tokio-comp","connection-manager"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.9"
+uuid = { version = "1", features = ["v4","serde"] }
+time = { version = "0.3", features = ["serde","formatting","parsing"] }
+jsonwebtoken = "9"
+rsa = { version = "0.9", features = ["sha2"] }
+sha2 = "0.10"
+hex = "0.4"
+base64 = "0.22"
+rand = "0.8"
+async-trait = "0.1"
+thiserror = "2"
+anyhow = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter","json"] }
+metrics = "0.24"
+metrics-exporter-prometheus = "0.16"
+validator = { version = "0.19", features = ["derive"] }
+
+[dev-dependencies]
+reqwest = { version = "0.12", features = ["json","rustls-tls"] }

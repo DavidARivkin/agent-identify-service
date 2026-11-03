@@ -1,0 +1,31 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: agent_identity
+      POSTGRES_USER: agent_identity
+      POSTGRES_PASSWORD: agent_identity
+    ports: ["5432:5432"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agent_identity -d agent_identity"]
+      interval: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    ports: ["6379:6379"]
+
+  agent-identity:
+    build: .
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_started }
+    environment:
+      CONFIG_PATH: /app/config.example.yaml
+      DATABASE_URL: postgres://agent_identity:agent_identity@postgres:5432/agent_identity
+      REDIS_URL: redis://redis:6379
+      RUST_LOG: info,agent_identity_service=debug
+    ports: ["8080:8080"]
+    volumes:
+      - ./config.example.yaml:/app/config.example.yaml:ro

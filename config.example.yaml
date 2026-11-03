@@ -1,0 +1,37 @@
+service:
+  bind_address: "0.0.0.0:8080"
+  trust_domain: "example.org"
+  environment: "development"
+  request_timeout_seconds: 10
+  max_body_bytes: 65536
+
+database:
+  # backend: "duckdb" (default), "sqlite", or "postgres"
+  backend: "duckdb"
+  # DuckDB / SQLite: file path or ":memory:"
+  # Postgres: "postgres://user:pass@host/dbname"
+  url: "/app/data/agent_identity.db"
+  max_connections: 20
+  min_connections: 2
+  connect_timeout_seconds: 5
+
+redis:
+  # Leave url empty to use the built-in in-memory revocation store.
+  # Set REDIS_URL env var or this field to use a real Redis instance.
+  url: ""
+  revocation_prefix: "agent-identity:revoked:"
+
+crypto:
+  issuer: "https://agent-identity.example.org"
+  signing_key_id: "agent-identity-signing-key-2026q4"
+  default_svid_ttl_seconds: 300
+  max_svid_ttl_seconds: 900
+  private_key_path: "./dev-signing-key.pem"
+
+security:
+  require_mtls: false
+  development_identity_spiffe_id: "spiffe://example.org/ns/agent-platform/sa/agent-control-plane"
+  allowed_control_plane_spiffe_ids:
+    - "spiffe://example.org/ns/agent-platform/sa/agent-control-plane"
+  rate_limit_per_second: 50
+  rate_limit_burst: 100

@@ -1,0 +1,8 @@
+target
+.git
+.env
+*.pem
+*.key
+*.crt
+config.yaml
+README.md

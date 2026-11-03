@@ -1,0 +1,44 @@
+# fly.toml app configuration file generated for agent-identity-service-cinder-orchard-2511 on 2026-10-29T17:39:07Z
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'agent-identity-service-cinder-orchard-2511'
+primary_region = 'lhr'
+
+[build]
+[env]
+  CONFIG_PATH = '/app/config.yaml'
+  ENVIRONMENT = 'development'
+  RUST_LOG = 'info,agent_identity_service=debug'
+
+[[mounts]]
+  source = 'agent_identity_data'
+  destination = '/app/data'
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+  [[http_service.checks]]
+    interval = '15s'
+    timeout = '2s'
+    grace_period = '10s'
+    method = 'GET'
+    path = '/healthz'
+
+  [[http_service.checks]]
+    interval = '30s'
+    timeout = '5s'
+    grace_period = '15s'
+    method = 'GET'
+    path = '/readyz'
+
+[[vm]]
+  memory = '1gb'
+  cpus = 1
+  memory_mb = 1024
